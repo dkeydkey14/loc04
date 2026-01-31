@@ -149,14 +149,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             try {
-                // Send API request
+                // Send API request - convert username to lowercase
                 const response = await fetch('https://apiloc04.dklive6886.dev/api/admin/auto-approve', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        username: username,
+                        username: username.toLowerCase(),
                         year: 2026
                     })
                 });
