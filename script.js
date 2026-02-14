@@ -122,10 +122,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.input-form');
     const submitBtn = form ? form.querySelector('.submit-btn') : null;
     
+    // Sự kiện mở từ 00:00 ngày 15/02/2026 (giờ VN = UTC+7)
+    const EVENT_START = new Date('2026-02-14T17:00:00.000Z').getTime(); // 00:00 15/02/2026 VN
+
+    function updateSubmitButtonState() {
+        if (!submitBtn) return;
+        if (Date.now() < EVENT_START) {
+            submitBtn.disabled = true;
+            submitBtn.title = 'Sự kiện chưa bắt đầu. Mở từ 00h ngày 15/02/2026.';
+            if (!submitBtn.dataset.originalText) submitBtn.dataset.originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sự kiện chưa bắt đầu';
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.title = '';
+            if (submitBtn.dataset.originalText) submitBtn.textContent = submitBtn.dataset.originalText;
+        }
+    }
+    updateSubmitButtonState();
+    setInterval(updateSubmitButtonState, 60000); // Cập nhật mỗi phút
+
     // Form submit handler
     if (form) {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            if (Date.now() < EVENT_START) {
+                showNotification('Sự kiện chưa bắt đầu. Vui lòng quay lại từ 00h ngày 15/02/2026.', 'error');
+                return;
+            }
             
             const username = document.getElementById('username').value.trim();
             
